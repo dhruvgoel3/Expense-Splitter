@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "41824435314",
+    "project_id": "notifications-app-d8c7e",
+    "storage_bucket": "notifications-app-d8c7e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:41824435314:android:40b484d91856b7c8aa16eb",
+        "android_client_info": {
+          "package_name": "com.example.expense_splitter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEnNA48YwWld-ZOR35ICR7BlmJ93gnxbQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
