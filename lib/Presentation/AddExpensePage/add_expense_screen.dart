@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:uuid/uuid.dart';
 
 class AddExpenseScreen extends StatefulWidget {
@@ -12,10 +13,10 @@ class AddExpenseScreen extends StatefulWidget {
 
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _auth = FirebaseAuth.instance;
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
-  final _uuid = const Uuid();
-  final _auth = FirebaseAuth.instance;
+  final _uuid = Uuid();
 
   String? _selectedPayerId;
   Map<String, String> _personNames = {}; // id => name
@@ -84,17 +85,15 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
           });
       final double share = amount / _selectedParticipantIds.length;
 
-// 1. Update totalPaid for payer
+      // 1. Update totalPaid for payer
       await FirebaseFirestore.instance
           .collection('users')
           .doc(uid)
           .collection('people')
           .doc(_selectedPayerId)
-          .update({
-        'totalPaid': FieldValue.increment(amount),
-      });
+          .update({'totalPaid': FieldValue.increment(amount)});
 
-// 2. Update totalOwes for each participant (except payer)
+      // 2. Update totalOwes for each participant (except payer)
       for (String participantId in _selectedParticipantIds) {
         if (participantId == _selectedPayerId) continue;
 
@@ -103,11 +102,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             .doc(uid)
             .collection('people')
             .doc(participantId)
-            .update({
-          'totalOwes': FieldValue.increment(share),
-        });
+            .update({'totalOwes': FieldValue.increment(share)});
       }
-
 
       if (context.mounted) {
         Navigator.of(context).pop(); // Go back safely
@@ -123,7 +119,14 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Expense')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          'Add Expense',
+          style: GoogleFonts.braahOne(color: Colors.black, fontSize: 24),
+        ),
+      ),
       body: _personNames.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : Padding(
@@ -134,28 +137,81 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   children: [
                     TextFormField(
                       controller: _titleController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Expense Title',
+                        labelStyle: GoogleFonts.braahOne(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                        hintText: 'Enter expense title',
+                        hintStyle: GoogleFonts.braahOne(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                        filled: true,
+                        fillColor: Colors.blue.withOpacity(0.1),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16,
+                          horizontal: 14,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                            color: Colors.blue,
+                            width: 2,
+                          ),
+                        ),
                       ),
                       validator: (value) =>
                           value == null || value.trim().isEmpty
                           ? 'Enter a title'
                           : null,
                     ),
-                    const SizedBox(height: 10),
+
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _amountController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Total Amount (₹)',
+                        labelStyle: GoogleFonts.braahOne(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                        hintText: 'Enter amount',
+                        hintStyle: GoogleFonts.braahOne(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                        filled: true,
+                        fillColor: Colors.blue.withOpacity(0.1),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16,
+                          horizontal: 14,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.black54),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                            color: Colors.blue,
+                            width: 2,
+                          ),
+                        ),
                       ),
                       validator: (value) =>
                           value == null || value.trim().isEmpty
                           ? 'Enter an amount'
                           : null,
                     ),
-                    const SizedBox(height: 10),
-                    const Text("Who paid?"),
+
+                    SizedBox(height: 20),
+
                     DropdownButtonFormField<String>(
                       value: _selectedPayerId,
                       items: _personNames.entries
@@ -171,13 +227,50 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       },
                       validator: (val) =>
                           val == null ? 'Select who paid' : null,
+                      style: GoogleFonts.braahOne(
+                        color: Colors.black,
+                        fontSize: 17,
+                      ),
+                      decoration: InputDecoration(
+                        labelText: 'Who Paid?',
+                        labelStyle: const TextStyle(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        filled: true,
+                        fillColor: Colors.blue.withOpacity(0.1),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16,
+                          horizontal: 14,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.black54),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                            color: Colors.blue,
+                            width: 2,
+                          ),
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 20),
-                    const Text("Who all were involved?"),
+
+                    SizedBox(height: 20),
+                    Text(
+                      "Who all were involved?",
+                      style: GoogleFonts.braahOne(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
+                    ),
                     ..._personNames.entries.map((entry) {
                       final id = entry.key;
                       final name = entry.value;
                       return CheckboxListTile(
+                        checkColor: Colors.white,
+                        fillColor:MaterialStateProperty.all<Color>(Colors.blue),
                         value: _selectedParticipantIds.contains(id),
                         onChanged: (val) {
                           setState(() {
@@ -188,13 +281,39 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                             }
                           });
                         },
-                        title: Text(name),
+                        title: Text(
+                          name,
+                          style: GoogleFonts.braahOne(
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
                       );
                     }),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _submitExpense,
-                      child: const Text('Add Expense'),
+                    SizedBox(height: 10),
+                    ElevatedButton.icon(
+                      icon: Icon(Icons.add, color: Colors.white, size: 20),
+                      label: Text(
+                        "Add Expense",
+                        style: GoogleFonts.braahOne(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        minimumSize: Size(340, 45), // button color
+                        // full width, height = 50
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            12,
+                          ), // rounded corners
+                        ),
+                      ),
+                      onPressed: () {
+                        _submitExpense();
+                      },
                     ),
                   ],
                 ),

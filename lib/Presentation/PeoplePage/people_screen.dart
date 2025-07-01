@@ -8,7 +8,6 @@ import '../../Models/personal_model.dart'; // Make sure this file exists
 import 'package:uuid/uuid.dart';
 
 import '../AddExpensePage/add_expense_screen.dart';
-import '../ChartPage/chart_screen.dart';
 import '../settlement_screen.dart';
 
 class PeopleScreen extends StatefulWidget {
