@@ -363,7 +363,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
                   ),
                 ),
                 onPressed: () {
-                  Get.to(() => AddExpenseScreen());
+                  Get.to(() => SettlementsScreen());
                 },
               ),
             ],
