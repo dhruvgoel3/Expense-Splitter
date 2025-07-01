@@ -1,8 +1,7 @@
 import 'package:expense_splitter/Presentation/PeoplePage/people_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -39,68 +38,158 @@ class _AuthScreenState extends State<AuthScreen> {
 
       // Navigate to PeopleScreen after successful login/signup
       if (context.mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => const PeopleScreen()),
-        );
+        Navigator.of(
+          context,
+        ).pushReplacement(MaterialPageRoute(builder: (ctx) => PeopleScreen()));
       }
     } catch (e) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(e.toString())));
     }
-  }
+  } // Authentication method
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Login / Signup")),
-      body: Center(
-        child: Card(
-          margin: const EdgeInsets.all(20),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    key: const ValueKey('email'),
-                    decoration: const InputDecoration(labelText: 'Email'),
-                    keyboardType: TextInputType.emailAddress,
-                    onSaved: (value) => email = value!,
-                    validator: (value) => value!.isEmpty || !value.contains('@')
-                        ? 'Enter a valid email'
-                        : null,
-                  ),
-                  TextFormField(
-                    key: const ValueKey('password'),
-                    decoration: const InputDecoration(labelText: 'Password'),
-                    obscureText: true,
-                    onSaved: (value) => password = value!,
-                    validator: (value) => value!.length < 6
-                        ? 'Password must be at least 6 characters'
-                        : null,
-                  ),
-                  const SizedBox(height: 12),
-                  ElevatedButton(
-                    onPressed: _submitAuthForm,
-                    child: Text(isLogin ? 'Login' : 'Signup'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      setState(() => isLogin = !isLogin);
-                    },
-                    child: Text(
-                      isLogin
-                          ? 'Create new account'
-                          : 'Already have an account? Login',
-                    ),
-                  ),
-                ],
-              ),
+      appBar: AppBar(
+        title: Center(
+          child: Text(
+            "Login / Signup",
+            style: GoogleFonts.braahOne(
+              fontWeight: FontWeight.bold,
+              fontSize: 25,
             ),
           ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 80),
+            Center(
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircleAvatar(
+                        radius: 100,
+                        backgroundColor: Colors.blue.withOpacity(0.1),
+                        child: Icon(
+                          Icons.currency_rupee,
+                          color: Colors.blue,
+                          size: 150,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+
+                      Text(
+                        "Expense",
+                        style: GoogleFonts.braahOne(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                        ),
+                      ),
+                      Text(
+                        "Splitter",
+                        style: GoogleFonts.braahOne(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                        ),
+                      ),
+                      SizedBox(height: 40),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            hintStyle: GoogleFonts.braahOne(
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                            prefixIcon: Icon(Icons.mail, color: Colors.black),
+                            border: InputBorder.none,
+                            hintText: "Email",
+                          ),
+                          key: ValueKey('email'),
+                          keyboardType: TextInputType.emailAddress,
+                          onSaved: (value) => email = value!,
+                          validator: (value) =>
+                              value!.isEmpty || !value.contains('@')
+                              ? 'Enter a valid email'
+                              : null,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: TextFormField(
+                          key: const ValueKey('password'),
+                          decoration: InputDecoration(
+                            hintStyle: GoogleFonts.braahOne(
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                            prefixIcon: Icon(
+                              Icons.password,
+                              color: Colors.black,
+                            ),
+                            border: InputBorder.none,
+                            hintText: "Password",
+                          ),
+                          obscureText: true,
+                          onSaved: (value) => password = value!,
+                          validator: (value) => value!.length < 6
+                              ? 'Password must be at least 6 characters'
+                              : null,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                        ),
+                        onPressed: _submitAuthForm,
+                        child: Text(
+                          isLogin ? 'Login' : 'Signup',
+                          style: GoogleFonts.braahOne(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          setState(() => isLogin = !isLogin);
+                        },
+                        child: Text(
+                          isLogin
+                              ? 'Create new account'
+                              : 'Already have an account? Login',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
