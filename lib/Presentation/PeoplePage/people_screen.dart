@@ -242,7 +242,10 @@ class _PeopleScreenState extends State<PeopleScreen> {
     final uid = user.uid;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
+
         leading: Icon(Icons.view_headline),
         title: Text(
           "Tittle :- " + _tripTitle,
